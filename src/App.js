@@ -1,9 +1,12 @@
-import './App.css';
+import React from 'react';
+import FilterPanel from './components/FilterPanel';
+import JobList from './components/JobList';
+import './App.css'
 
 function App() {
   return (
     <div className="App">
-      candidate-application-platform
+      <JobList />
     </div>
   );
 }
