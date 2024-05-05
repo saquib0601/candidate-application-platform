@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import JobCard from './JobCard';
+import { useDispatch, useSelector } from 'react-redux';
+import { setJobs } from '../redux/actions/actions';
 
 const JobList = () => {
   const [page, setPage] = useState(1);
-  const [jobs, setJobs] = useState();
+  // const [jobs, setJobs] = useState();
+
+  const dispatch = useDispatch();
+  const jobs = useSelector(state => state.jobs);
+  console.log(jobs)
 
   useEffect(() => {
     const fetchData = async () => {
-
     try {
         const myHeaders = {
           "Content-Type": "application/json"
@@ -24,7 +29,8 @@ const JobList = () => {
         });
     
         console.log(response.data);
-        setJobs(response.data.jdList)
+        dispatch(setJobs(response.data.jdList)); // Dispatch action to set jobs
+        // setJobs(response.data.jdList)
         // handle response data as needed
     
       } catch (error) {
@@ -34,7 +40,7 @@ const JobList = () => {
 
     fetchData();
 
- },[page]);
+ },[dispatch,page]);
 
   const handleScroll = () => {
     // Check if user has scrolled to the bottom of the page
