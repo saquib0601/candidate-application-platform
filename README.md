@@ -1,6 +1,6 @@
 # Job List Web App
 
-This is a simple web application that allows users to browse job listings with filtering options. Users can filter jobs based on roles, experience, location, minimum base pay, and search by company name.
+This is a simple job listing application built with React and Redux for state management. It allows users to browse job listings with filtering options. Users can filter jobs based on roles, experience, location, minimum base pay, and search by company name.
 
 ## Technologies Used
 
@@ -9,6 +9,7 @@ This is a simple web application that allows users to browse job listings with f
 - CSS (for styling)
 - MatarialUI
 - Redux
+- Redux Toolkit
 
 ## Getting Started
 
