@@ -5,6 +5,7 @@ import JobCard from './JobCard';
 // import { setJobs } from '../redux/actions/actions';
 
 const JobList = () => {
+  // State variables for managing jobs, page number, search term, and original jobs
   const [page, setPage] = useState(1);
   const [jobs, setJobs] = useState();
   const [searchTerm, setSearchTerm] = useState('');
@@ -15,6 +16,7 @@ const JobList = () => {
   console.log(jobs)
 
   useEffect(() => {
+    // Function to fetch data from the API
     const fetchData = async () => {
     try {
         const myHeaders = {
@@ -41,11 +43,13 @@ const JobList = () => {
       }
     };
 
+    // Call the fetchData function when the component mounts or when the page state changes
     fetchData();
 
 //  },[dispatch,page]);
 },[page]);
 
+  // Function to handle scroll events
   const handleScroll = () => {
     // Check if user has scrolled to the bottom of the page
     if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
@@ -54,27 +58,29 @@ const JobList = () => {
   };
 
   useEffect(() => {
+    // Add event listener for scrolling when the component mounts
     window.addEventListener('scroll', handleScroll);
     return () => {
+      // Remove event listener when the component unmounts
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
+  // Function to handle input change in the search input field
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value);
-    // onSearchChange(e.target.value);
-
-    let filteredJobs = [...jobs];
-    console.log(filteredJobs)
-
-    if (searchTerm) {
-      filteredJobs = filteredJobs.filter(job =>
-        job.companyName.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-    console.log(searchTerm)
+    filterJobs(e.target.value);
   };
 
+  const filterJobs = (searchTerm) => {
+    const filteredJobs = originalJobs.filter(job =>
+      job.companyName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setJobs(filteredJobs);
+  };
+
+  
+  // Function to handle filter changes
   const onFilterChange = (filterType, value) => {
     // Create a copy of the original jobs array
     let filteredJobs = [...originalJobs];
@@ -93,19 +99,14 @@ const JobList = () => {
       filteredJobs = filteredJobs.filter(job => job.minJdSalary >= value);
     };
   
-    // Filter by search term if present
     if (searchTerm) {
-      filteredJobs = filteredJobs.filter(job =>
-        job.companyName.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      filterJobs(searchTerm);
+    } else {
+      setJobs(filteredJobs);
     }
-    console.log(searchTerm)
-  
-    // Set the filtered jobs to state
-    setJobs(filteredJobs);
-    console.log(filteredJobs)
   };
 
+  // Function to clear all filters and reset the jobs list to the original list
   const handleClearFilters = () => {
     setJobs(originalJobs); // Reset jobs to original list
     setSearchTerm(''); // Clear search term

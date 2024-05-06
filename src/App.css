@@ -1,0 +1,21 @@
+.job-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+.job-card {
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 10px;
+    padding: 10px;
+  }
+.filter-panel {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 4vh;
+}
+
+  
