@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import JobCard from './JobCard';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { setJobs } from '../redux/actions/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { setJobs } from '../redux/actions/actions';
 
 const JobList = () => {
   // State variables for managing jobs, page number, search term, and original jobs
   const [page, setPage] = useState(1);
-  const [jobs, setJobs] = useState();
   const [searchTerm, setSearchTerm] = useState('');
-  const [originalJobs, setOriginalJobs] = useState();
+  const [originalJobs, setOriginalJobs] = useState([]);
 
-  // const dispatch = useDispatch();
-  // const jobs = useSelector(state => state.jobs);
+  const dispatch = useDispatch();
+  const jobs = useSelector(state => state.jobs.jobs); // Redux selector to get jobs from the store
   console.log(jobs)
 
   useEffect(() => {
@@ -31,12 +30,9 @@ const JobList = () => {
         const response = await axios.post("https://api.weekday.technology/adhoc/getSampleJdJSON", body, {
           headers: myHeaders
         });
-    
-        console.log(response.data);
-        // dispatch(setJobs(response.data.jdList)); // Dispatch action to set jobs
+        dispatch(setJobs(response.data.jdList)); // Dispatch action to set jobs
+        console.log(jobs)
         setOriginalJobs(response.data.jdList)
-        setJobs(response.data.jdList)
-        // handle response data as needed
     
       } catch (error) {
         console.error(error);
@@ -76,7 +72,7 @@ const JobList = () => {
     const filteredJobs = originalJobs.filter(job =>
       job.companyName.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    setJobs(filteredJobs);
+    dispatch(setJobs(filteredJobs)); // Dispatch action to set jobs
   };
 
   
@@ -84,9 +80,6 @@ const JobList = () => {
   const onFilterChange = (filterType, value) => {
     // Create a copy of the original jobs array
     let filteredJobs = [...originalJobs];
-    console.log(filteredJobs)
-    console.log(filterType)
-    console.log(value)
   
     // Filter the jobs based on the selected filter
     if (filterType === 'role') {
@@ -102,13 +95,13 @@ const JobList = () => {
     if (searchTerm) {
       filterJobs(searchTerm);
     } else {
-      setJobs(filteredJobs);
+      dispatch(setJobs(filteredJobs)); // Dispatch action to set jobs
     }
   };
 
   // Function to clear all filters and reset the jobs list to the original list
   const handleClearFilters = () => {
-    setJobs(originalJobs); // Reset jobs to original list
+    dispatch(setJobs(originalJobs)); // Dispatch action to set jobs
     setSearchTerm(''); // Clear search term
   };
   
@@ -173,13 +166,17 @@ const JobList = () => {
       <button onClick={handleClearFilters}>Clear Filters</button>
     </div>
 
-    <div className="job-list">
-      {jobs?.map(job => (
-        <JobCard key={job.jdUid} job={job} />
-      ))}
-    </div>
-    </div>
-  );
+<div className="job-list">
+  {jobs ? (
+    jobs?.map(job => (
+      <JobCard key={job.jdUid} job={job} />
+    ))
+  ) : (
+    <p>No jobs available</p>
+  )}
+</div>
+</div>
+);
 }
 
 export default JobList;
