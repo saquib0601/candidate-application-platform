@@ -7,6 +7,8 @@ import JobCard from './JobCard';
 const JobList = () => {
   const [page, setPage] = useState(1);
   const [jobs, setJobs] = useState();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [originalJobs, setOriginalJobs] = useState();
 
   // const dispatch = useDispatch();
   // const jobs = useSelector(state => state.jobs);
@@ -30,6 +32,7 @@ const JobList = () => {
     
         console.log(response.data);
         // dispatch(setJobs(response.data.jdList)); // Dispatch action to set jobs
+        setOriginalJobs(response.data.jdList)
         setJobs(response.data.jdList)
         // handle response data as needed
     
@@ -57,9 +60,6 @@ const JobList = () => {
     };
   }, []);
 
-
-  const [searchTerm, setSearchTerm] = useState('');
-
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value);
     // onSearchChange(e.target.value);
@@ -77,7 +77,7 @@ const JobList = () => {
 
   const onFilterChange = (filterType, value) => {
     // Create a copy of the original jobs array
-    let filteredJobs = [...jobs];
+    let filteredJobs = [...originalJobs];
     console.log(filteredJobs)
     console.log(filterType)
     console.log(value)
@@ -104,6 +104,11 @@ const JobList = () => {
     // Set the filtered jobs to state
     setJobs(filteredJobs);
     console.log(filteredJobs)
+  };
+
+  const handleClearFilters = () => {
+    setJobs(originalJobs); // Reset jobs to original list
+    setSearchTerm(''); // Clear search term
   };
   
   return (
@@ -135,6 +140,7 @@ const JobList = () => {
       <div>
         <label htmlFor="remote">Location:</label>
         <select id="remote" onChange={(e) => onFilterChange('location', e.target.value)}>
+          <option value="">All</option>
           <option value="remote">Remote</option>
           <option value="chennai">Chennai</option>
           <option value="mumbai">Mumbai</option>
@@ -163,8 +169,9 @@ const JobList = () => {
           onChange={handleInputChange}
         />
       </div>
+      <button onClick={handleClearFilters}>Clear Filters</button>
     </div>
-    
+
     <div className="job-list">
       {jobs?.map(job => (
         <JobCard key={job.jdUid} job={job} />
